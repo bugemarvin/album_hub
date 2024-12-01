@@ -1,3 +1,29 @@
-from flask_sqlalchemy import SQLAlchemy # type: ignore
+from .blacklist import Blacklist as blacklist
+from .db import db
 
-db = SQLAlchemy()
+def check_blacklist(jti):
+    return blacklist.is_blacklisted(jti)
+
+
+def add_to_blacklist(token):
+    blacklist.add(token)
+
+
+def remove_from_blacklist(token):
+    blacklist.delete(token)
+
+
+def clear_blacklist():
+    blacklist.delete_all()
+
+
+def delete_blacklist_token(token):
+    blacklist.delete(token)
+
+
+def blacklist_tokens():
+    return blacklist.all()
+
+
+def blacklist_save():
+    blacklist.save()

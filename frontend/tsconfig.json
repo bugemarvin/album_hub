@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "baseUrl": "./",
+  "paths": {
+    "@/*": [
+      "src/*"
+    ],
+    "@api": [
+      "src/api/"
+    ],
+    "@app": [
+      "src/app/"
+    ],
+    "@components": [
+      "src/components/"
+    ],
+    "@hooks": [
+      "src/hooks/"
+    ],
+    "@lib": [
+      "src/lib/"
+    ],
+    "@routes": [
+      "src/routes/"
+    ],
+    "@assets": [
+      "src/assets/"
+    ],
+    "@cache": [
+      "src/cache/"
+    ],
+    "@types": [
+      "src/types/"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "custom.d.ts",
+    "src/routes/protected-route.tsx",
+    "src/hooks/index.tsx",
+    "src/utils/theme.tsx"
+  ],
+  "types": [
+    "node",
+    "jest",
+    "jose"
+  ]
+}
