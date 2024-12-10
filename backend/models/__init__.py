@@ -1,5 +1,8 @@
 from .blacklist import Blacklist as blacklist
 from .db import db
+from .user import User
+from .album import Album
+from .photo import Photo
 
 def check_blacklist(jti):
     return blacklist.is_blacklisted(jti)

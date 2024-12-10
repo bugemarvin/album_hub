@@ -18,9 +18,11 @@ class Blacklist(db.Model):
 
     @classmethod
     def add(cls, token):
-        jti = token['jti']
-        user_id = token['identity']
-        new_blacklist_token = cls(jti=jti, user_id=user_id)
+        jti = token.get('jti')
+        user_id = token.get('sub')
+        if not user_id:
+            raise ValueError("Token does not contain 'sub' (identity).")
+        new_blacklist_token = cls(token=f'{token}', jti=jti, user_id=user_id)
         db.session.add(new_blacklist_token)
         db.session.commit()
 

@@ -8,6 +8,12 @@ import { ResetPassword } from "../app/auth/reset-password";
 import { VerifyEmail } from "../app/auth/verify-email";
 import { Error404 } from "../components/404";
 import { Loading } from "../components/loader";
+import { Dashboard } from '../app/dashboard';
+import { Home } from "../app/dashboard/Home";
+import { Albums } from "../app/dashboard/Albums";
+import { Photos } from "../app/dashboard/Photos";
+import { Settings } from "../app/dashboard/Settings";
+import { ProtectedRoute } from "./protected-route";
 
 /**
  * @function router - The router for the application.
@@ -64,5 +70,31 @@ export const router = createBrowserRouter([
   {
     path: "*",
     element: <Error404 />
+  },
+  {
+    path: "dashboard",
+    element: (
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Home />
+      },
+      {
+        path: 'albums',
+        element: <Albums />
+      },
+      {
+        path: 'photos',
+        element: <Photos />
+      },
+      {
+        path: 'settings',
+        element: <Settings />
+      },
+    ],
   },
 ]);

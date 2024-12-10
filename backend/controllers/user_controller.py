@@ -1,6 +1,6 @@
 import datetime
 from utils import json_response
-from models.user import User
+from models import User
 from flask import request, url_for  # type: ignore
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt  # type: ignore
 from configs.config import Config
@@ -70,7 +70,8 @@ def register():
         return json_response(False, 'Passwords do not match', 400)
 
     password = generate_password_hash(password)
-    user = User.query.filter_by(email=email).first() or User.query.filter_by(username=username).first()
+    user = User.query.filter_by(email=email).first(
+    ) or User.query.filter_by(username=username).first()
     if user:
         return json_response(False, 'User already exists', 400)
 
@@ -84,30 +85,20 @@ def register():
 
 @jwt_required()
 def logout():
-    try:
-        user_id = get_jwt_identity()
-        if not user_id:
-            return json_response(False, "Invalid or missing token", 401)
-
-        user = User.query.get(user_id)
-        if not user:
-            return json_response(False, "User not found", 404)
-
-        jti = get_jwt()['jti']
-        
-        if Blacklist.is_blacklisted(jti):
-            return json_response(False, "Token already expired", 401)
-
-        Blacklist.add(get_jwt())
-
-        user.is_online = False
-        user.save()
-
-        return json_response(True, "Logout successful", 200)
-    
-    except Exception as e:
-        return json_response(False, f"Internal server error: {str(e)}", 500)
-
+    user_id = get_jwt_identity()
+    if not user_id:
+        return json_response(False, "Invalid or missing token", 401)
+    user = User.query.get(user_id)
+    if not user:
+        return json_response(False, "User not found", 404)
+    token = get_jwt()
+    jti = token.get('jti')
+    if Blacklist.is_blacklisted(jti):
+        return json_response(False, "Token already expired", 401)
+    Blacklist.add(get_jwt())
+    user.is_online = False
+    user.save()
+    return json_response(True, "Logout successful", 200)
 
 
 def forgot_password():
@@ -126,9 +117,6 @@ def forgot_password():
 
     reset_url = url_for('user_bp.reset_password_users',
                         token=reset_token, _external=True)
-
-    print(f"Reset URL: {reset_url}")  # For debugging
-
     return json_response(True, "Password reset email sent", 200)
 
 
@@ -155,14 +143,17 @@ def reset_password():
 
     return json_response(True, "Password updated successfully", 200)
 
+
 @jwt_required()
 def get_user_profile():
     user_id = get_jwt_identity()
+    if not user_id:
+        return json_response(False, "Invalid token, no user ID found", 400)
+    
     user = User.query.get(user_id)
-
     if not user:
         return json_response(False, "User not found", 404)
-
+    
     profile_data = {
         "id": user.id,
         "username": user.username,
@@ -170,3 +161,4 @@ def get_user_profile():
         "created_at": user.created_at,
     }
     return json_response(True, 'User profile found', 200, {"profile": profile_data})
+
